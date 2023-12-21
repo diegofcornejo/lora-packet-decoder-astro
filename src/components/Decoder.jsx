@@ -1,4 +1,3 @@
-// import Image from 'next/image';
 import { useState } from 'react';
 import { Toaster, toast } from 'sonner';
 import xss from 'xss';
@@ -151,7 +150,7 @@ export default function Home() {
 					/>
 				</div>
 				<div className='flex gap-4'>
-				<button
+					<button
 						className='w-full px-4 py-2 text-sm font-bold text-white bg-red-500 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75'
 						type='button'
 						name='reset'

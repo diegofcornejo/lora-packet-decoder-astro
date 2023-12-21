@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Toaster, toast } from 'sonner';
 import xss from 'xss';
 import Card from './Card.jsx';
+import Skeleton from './Skeleton.jsx';
 
 export default function Home() {
 	const [data, setData] = useState('');
@@ -11,6 +12,7 @@ export default function Home() {
 	const [decoded, setDecoded] = useState('');
 	const [decodedBuffer, setDecodedBuffer] = useState('');
 	const [isWarning, setIsWarning] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 
 	function replacer(key, value) {
@@ -44,7 +46,13 @@ export default function Home() {
 	}
 
 
+	const sleep = (ms) => {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
 	const Decode = async (data, appKey, nwkKey) => {
+		setIsLoading(true);
+		handleClearResult();
 		const loading = toast.loading('Decoding packet...');
 		const response = await fetch('/decode', {
 			method: 'POST',
@@ -53,6 +61,8 @@ export default function Home() {
 				'Content-Type': 'application/json',
 			},
 		})
+		await sleep(500);
+		setIsLoading(false);
 		toast.dismiss(loading);
 		if (response.status !== 200) {
 			const data = await response.json();
@@ -65,7 +75,6 @@ export default function Home() {
 	}
 
 	const handleDecode = async () => {
-
 		try {
 			if (!data.trim()) {
 				toast.warning('Please provide the Lora packet');
@@ -82,15 +91,24 @@ export default function Home() {
 		}
 	};
 
-	const handleClear = () => {
+	const handleClearInputs = () => {
+		setIsWarning(false);
 		setData('');
 		setAppKey('');
 		setNwkKey('');
+	};
+
+	const handleClearResult = () => {
 		setDecoded('');
 		setDecodedBuffer('');
-		setIsWarning(false);
 		setProperties([]);
 	};
+
+	const handleClear = () => {
+		handleClearInputs();
+		handleClearResult();
+	};
+
 
 	const handleDataChange = (e) => {
 		setData(e.target.value);
@@ -171,6 +189,7 @@ export default function Home() {
 				</div>
 			</Card>
 			<Card title='Decoded Packet'>
+				{isLoading && <Skeleton />}
 				{properties.map((property) => (
 					<pre className='flex flex-col text-xs md:text-sm' key={property.name}>
 						{property.name} = {property.description}
@@ -179,6 +198,7 @@ export default function Home() {
 				<pre className='text-xs md:text-sm' dangerouslySetInnerHTML={{ __html: sanitizeAndHighlightWarnings(decoded) }}></pre>
 			</Card>
 			<Card title='Decoded Packet (Buffer)'>
+				{isLoading && <Skeleton />}
 				<pre className='text-xs md:text-sm'>{decodedBuffer}</pre>
 			</Card>
 			<Toaster position="top-center" richColors closeButton />

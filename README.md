@@ -1,4 +1,4 @@
-[![Vercel Deploy](https://therealsujitk-vercel-badge.vercel.app/?app=lora-packet-decoder-astro)](https://lora-packet.vercel.app)
+[![Vercel Deploy](https://therealsujitk-vercel-badge.vercel.app/?app=lora-packet)](https://lora-packet.vercel.app)
 
 # Lora Packet Decoder
 This simple web app is used to decode Lora packets. It is based on the [Anthony Kirby's Lora Packet Decoder](https://github.com/anthonykirby/lora-packet) and the [Arjan's Lora Packet Decoder](https://lorawan-packet-decoder-0ta6puiniaut.runkit.sh/)

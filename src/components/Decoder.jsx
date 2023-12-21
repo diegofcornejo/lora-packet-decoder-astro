@@ -126,11 +126,11 @@ export default function Home() {
 		<main className="flex flex-col lg:flex-row gap-4 w-full text-white h-dvh">
 			<Card title='Parameters'>
 				<div className='flex flex-col gap-2'>
-					<label className='text-sm font-bold text-gray-700 dark:text-gray-300'>
+					<label className='text-sm font-bold text-gray-300'>
 						Lora Packet (hex-encoded or Base64)
 					</label>
 					<input
-						className={`w-full p-4 text-gray-700 bg-gray-200 rounded-lg dark:bg-gray-700 dark:text-gray-300 text-sm md:text-base ${isWarning ? "border-yellow-500 border-2" : ""} `}
+						className={`w-full p-4  rounded-lg bg-gray-700 text-gray-300 text-sm md:text-base ${isWarning ? "border-yellow-500 border-2" : ""} `}
 						type='text'
 						name='lora-packet'
 						id='lora-packet'
@@ -140,11 +140,11 @@ export default function Home() {
 					/>
 				</div>
 				<div className='flex flex-col gap-2'>
-					<label className='text-sm font-bold text-gray-700 dark:text-gray-300'>
+					<label className='text-sm font-bold text-gray-300'>
 						AppSKey (hex-encoded; optional)
 					</label>
 					<input
-						className='w-full p-4 text-gray-700 bg-gray-200 rounded-lg dark:bg-gray-700 dark:text-gray-300 text-sm md:text-base'
+						className='w-full p-4  rounded-lg bg-gray-700 text-gray-300 text-sm md:text-base'
 						type='text'
 						name='app-key'
 						id='app-key'
@@ -154,11 +154,11 @@ export default function Home() {
 					/>
 				</div>
 				<div className='flex flex-col gap-2'>
-					<label className='text-sm font-bold text-gray-700 dark:text-gray-300'>
+					<label className='text-sm font-bold text-gray-300'>
 						NwkSKey (hex-encoded; optional)
 					</label>
 					<input
-						className='w-full p-4 text-gray-700 bg-gray-200 rounded-lg dark:bg-gray-700 dark:text-gray-300 text-sm md:text-base'
+						className='w-full p-4  rounded-lg bg-gray-700 text-gray-300 text-sm md:text-base'
 						type='text'
 						name='nwk-key'
 						id='nwk-key'

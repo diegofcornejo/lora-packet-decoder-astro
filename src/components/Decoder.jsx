@@ -137,6 +137,7 @@ export default function Home() {
 						placeholder='Paste your LoraWAN packet here'
 						value={data}
 						onChange={handleDataChange}
+						data-umami-event="lora-packet-input"
 					/>
 				</div>
 				<div className='flex flex-col gap-2'>
@@ -151,6 +152,7 @@ export default function Home() {
 						placeholder='Paste your App Session Key here'
 						value={appKey}
 						onChange={handleAppKeyChange}
+						data-umami-event="appskey-input"
 					/>
 				</div>
 				<div className='flex flex-col gap-2'>
@@ -165,6 +167,7 @@ export default function Home() {
 						placeholder='Paste your Network Session Key here'
 						value={nwkKey}
 						onChange={handleNwkKeyChange}
+						data-umami-event="nwkskey-input"
 					/>
 				</div>
 				<div className='flex gap-4'>
@@ -174,6 +177,7 @@ export default function Home() {
 						name='reset'
 						id='reset'
 						onClick={handleClear}
+						data-umami-event="clear-button"
 					>
 						Reset
 					</button>
@@ -183,6 +187,7 @@ export default function Home() {
 						name='decode'
 						id='decode'
 						onClick={handleDecode}
+						data-umami-event="decode-button"
 					>
 						Decode
 					</button>

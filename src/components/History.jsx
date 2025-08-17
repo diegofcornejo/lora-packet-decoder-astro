@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './History.module.css';
 
-export default function History({ history, onLoad, onDelete, onRename, onFavorite }) {
+export default function History({ history, onLoad, onDelete, onRename, onFavorite, onLoadDefaults }) {
   const handleRename = (id) => {
     const newName = prompt('Enter a new name for this execution:');
     if (newName && newName.trim() !== '') {
@@ -11,7 +11,14 @@ export default function History({ history, onLoad, onDelete, onRename, onFavorit
 
   return (
     <div className={styles.historyContainer}>
-      <h3 className={styles.historyTitle}>History</h3>
+      <div className={styles.historyHeader}>
+        <h3 className={styles.historyTitle}>History</h3>
+        <button onClick={onLoadDefaults} className={styles.iconButton} title="Load default examples">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={styles.reloadIcon}>
+            <path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+          </svg>
+        </button>
+      </div>
       <p className={styles.historyLimitNote}>Showing last 5 executions.</p>
       {history.length === 0 ? (
         <p className={styles.emptyText}>No previous decodings.</p>

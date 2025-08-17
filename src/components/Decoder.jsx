@@ -5,6 +5,42 @@ import Card from './Card.jsx';
 import Skeleton from './Skeleton.jsx';
 import History from './History.jsx';
 
+const defaultHistory = [
+	{
+		id: 'default-3',
+		name: 'Example - Hex with Keys',
+		data: '40F17DBE4900020001954378762B11FF0D',
+		appKey: 'ec925802ae430ca77fd3dd73cb2cc588',
+		nwkKey: '44024241ed4ce9a68c6a8bc055233fd3',
+		decoded: '',
+		decodedBuffer: '',
+		properties: [],
+		favorite: false,
+	},
+	{
+		id: 'default-2',
+		name: 'Example - Base64 Lora Packet',
+		data: 'QPF9vkkAAgABlUN4disR/w0=',
+		appKey: '',
+		nwkKey: '',
+		decoded: '',
+		decodedBuffer: '',
+		properties: [],
+		favorite: false,
+	},
+	{
+		id: 'default-1',
+		name: 'Example - Hex Lora Packet',
+		data: '40F17DBE4900020001954378762B11FF0D',
+		appKey: '',
+		nwkKey: '',
+		decoded: '',
+		decodedBuffer: '',
+		properties: [],
+		favorite: false,
+	}
+];
+
 export default function Home() {
 	const [data, setData] = useState('');
 	const [appKey, setAppKey] = useState('');
@@ -22,41 +58,6 @@ export default function Home() {
 			if (savedHistory) {
 				setHistory(JSON.parse(savedHistory));
 			} else {
-				const defaultHistory = [
-					{
-						id: 'default-3',
-						name: 'Example - Hex with Keys',
-						data: '40F17DBE4900020001954378762B11FF0D',
-						appKey: 'ec925802ae430ca77fd3dd73cb2cc588',
-						nwkKey: '44024241ed4ce9a68c6a8bc055233fd3',
-						decoded: '',
-						decodedBuffer: '',
-						properties: [],
-						favorite: false,
-					},
-					{
-						id: 'default-2',
-						name: 'Example - Base64 Lora Packet',
-						data: 'QPF9vkkAAgABlUN4disR/w0=',
-						appKey: '',
-						nwkKey: '',
-						decoded: '',
-						decodedBuffer: '',
-						properties: [],
-						favorite: false,
-					},
-					{
-						id: 'default-1',
-						name: 'Example - Hex Lora Packet',
-						data: '40F17DBE4900020001954378762B11FF0D',
-						appKey: '',
-						nwkKey: '',
-						decoded: '',
-						decodedBuffer: '',
-						properties: [],
-						favorite: false,
-					}
-				];
 				setHistory(defaultHistory);
 			}
 		} catch (error) {
@@ -208,6 +209,14 @@ export default function Home() {
 		toast.success('Favorite status updated.');
 	};
 
+	const handleLoadDefaults = () => {
+		if (window.confirm('This will replace your current history with the default examples. Are you sure?')) {
+			setHistory(defaultHistory);
+			toast.success('Default examples loaded.');
+		}
+	};
+
+
 	const decodedPacketContent = () => {
 		const propertiesText = properties.map(p => `${p.name} = ${p.description}`).join('\n');
 		return `${propertiesText}\n${decoded}`.trim();
@@ -321,6 +330,7 @@ export default function Home() {
 					onDelete={handleDeleteHistory}
 					onRename={handleRenameHistory}
 					onFavorite={handleFavoriteHistory}
+					onLoadDefaults={handleLoadDefaults}
 				/>
 			</Card>
 			<Card title='Decoded Packet' copyableContent={decodedPacketContent()}>

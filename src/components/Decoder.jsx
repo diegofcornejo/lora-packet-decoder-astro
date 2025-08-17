@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Toaster, toast } from 'sonner';
 import xss from 'xss';
 import Card from './Card.jsx';
 import Skeleton from './Skeleton.jsx';
+import History from './History.jsx';
 
 export default function Home() {
 	const [data, setData] = useState('');
@@ -13,6 +14,28 @@ export default function Home() {
 	const [decodedBuffer, setDecodedBuffer] = useState('');
 	const [isWarning, setIsWarning] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [history, setHistory] = useState([]);
+
+	useEffect(() => {
+		try {
+			const savedHistory = localStorage.getItem('decodingHistory');
+			if (savedHistory) {
+				setHistory(JSON.parse(savedHistory));
+			}
+		} catch (error) {
+			console.error('Failed to load history from localStorage', error);
+			toast.error('Failed to load history from localStorage');
+		}
+	}, []);
+
+	useEffect(() => {
+		try {
+			localStorage.setItem('decodingHistory', JSON.stringify(history));
+		} catch (error) {
+			console.error('Failed to save history to localStorage', error);
+			toast.error('Failed to save history to localStorage');
+		}
+	}, [history]);
 
 
 	function replacer(key, value) {
@@ -85,11 +108,69 @@ export default function Home() {
 			const { packet, decoded, properties } = await Decode(data, appKey, nwkKey);
 			setDecoded(decoded);
 			setDecodedBuffer(JSON.stringify(packet, replacer, 2));
-			setProperties(properties)
+			setProperties(properties);
+
+			const newHistoryItem = {
+				id: Date.now(),
+				name: `Execution - ${new Date().toLocaleTimeString()}`,
+				data,
+				appKey,
+				nwkKey,
+				decoded,
+				decodedBuffer: JSON.stringify(packet, replacer, 2),
+				properties,
+				favorite: false,
+			};
+
+			setHistory(prevHistory => {
+				const favorites = prevHistory.filter(item => item.favorite);
+				const nonFavorites = prevHistory.filter(item => !item.favorite);
+				const updatedNonFavorites = [newHistoryItem, ...nonFavorites];
+				const finalNonFavorites = updatedNonFavorites.slice(0, 5);
+				return [...favorites, ...finalNonFavorites];
+			});
+
 		} catch (error) {
 			toast.error(`Error decoding packet: ${error.message}`, { duration: 5000 });
 		}
 	};
+
+	const handleLoadHistory = (id) => {
+		const item = history.find(item => item.id === id);
+		if (item) {
+			setData(item.data);
+			setAppKey(item.appKey);
+			setNwkKey(item.nwkKey);
+			setDecoded(item.decoded);
+			setDecodedBuffer(item.decodedBuffer);
+			setProperties(item.properties);
+			toast.success(`Loaded "${item.name}" from history.`);
+		}
+	};
+
+	const handleDeleteHistory = (id) => {
+		setHistory(prevHistory => prevHistory.filter(item => item.id !== id));
+		toast.success('Execution deleted from history.');
+	};
+
+	const handleRenameHistory = (id, newName) => {
+		setHistory(prevHistory =>
+			prevHistory.map(item =>
+				item.id === id ? { ...item, name: newName } : item
+			)
+		);
+		toast.success('Execution renamed.');
+	};
+
+	const handleFavoriteHistory = (id) => {
+		setHistory(prevHistory =>
+			prevHistory.map(item =>
+				item.id === id ? { ...item, favorite: !item.favorite } : item
+			)
+		);
+		toast.success('Favorite status updated.');
+	};
+
 
 	const handleClearInputs = () => {
 		setIsWarning(false);
@@ -125,73 +206,80 @@ export default function Home() {
 	return (
 		<main className="flex flex-col lg:flex-row gap-4 w-full text-white h-dvh">
 			<Card title='Parameters'>
-				<div className='flex flex-col gap-2'>
-					<label className='text-sm font-bold text-gray-300'>
-						Lora Packet (hex-encoded or Base64)
-					</label>
-					<input
-						className={`w-full p-4  rounded-lg bg-gray-700 text-gray-300 text-sm md:text-base ${isWarning ? "border-yellow-500 border-2" : ""} `}
-						type='text'
-						name='lora-packet'
-						id='lora-packet'
-						placeholder='Paste your LoraWAN packet here'
-						value={data}
-						onChange={handleDataChange}
-						data-umami-event="lora-packet-input"
-					/>
+					<div className='flex flex-col gap-2'>
+						<label className='text-sm font-bold text-gray-300'>
+							Lora Packet (hex-encoded or Base64)
+						</label>
+						<input
+							className={`w-full p-4  rounded-lg bg-gray-700 text-gray-300 text-sm md:text-base ${isWarning ? "border-yellow-500 border-2" : ""} `}
+							type='text'
+							name='lora-packet'
+							id='lora-packet'
+							placeholder='Paste your LoraWAN packet here'
+							value={data}
+							onChange={handleDataChange}
+							data-umami-event="lora-packet-input"
+						/>
+					</div>
+					<div className='flex flex-col gap-2'>
+						<label className='text-sm font-bold text-gray-300'>
+							AppSKey (hex-encoded; optional)
+						</label>
+						<input
+							className='w-full p-4  rounded-lg bg-gray-700 text-gray-300 text-sm md:text-base'
+							type='text'
+							name='app-key'
+							id='app-key'
+							placeholder='Paste your App Session Key here'
+							value={appKey}
+							onChange={handleAppKeyChange}
+							data-umami-event="appskey-input"
+						/>
+					</div>
+					<div className='flex flex-col gap-2'>
+						<label className='text-sm font-bold text-gray-300'>
+							NwkSKey (hex-encoded; optional)
+						</label>
+						<input
+							className='w-full p-4  rounded-lg bg-gray-700 text-gray-300 text-sm md:text-base'
+							type='text'
+							name='nwk-key'
+							id='nwk-key'
+							placeholder='Paste your Network Session Key here'
+							value={nwkKey}
+							onChange={handleNwkKeyChange}
+							data-umami-event="nwkskey-input"
+						/>
+					</div>
+					<div className='flex gap-4'>
+						<button
+							className='w-full px-4 py-2 text-sm font-bold text-white bg-red-500 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75'
+							type='button'
+							name='reset'
+							id='reset'
+							onClick={handleClear}
+							data-umami-event="clear-button"
+						>
+							Reset
+						</button>
+						<button
+							className='w-full px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75'
+							type='button'
+							name='decode'
+							id='decode'
+							onClick={handleDecode}
+							data-umami-event="decode-button"
+						>
+							Decode
+						</button>
 				</div>
-				<div className='flex flex-col gap-2'>
-					<label className='text-sm font-bold text-gray-300'>
-						AppSKey (hex-encoded; optional)
-					</label>
-					<input
-						className='w-full p-4  rounded-lg bg-gray-700 text-gray-300 text-sm md:text-base'
-						type='text'
-						name='app-key'
-						id='app-key'
-						placeholder='Paste your App Session Key here'
-						value={appKey}
-						onChange={handleAppKeyChange}
-						data-umami-event="appskey-input"
-					/>
-				</div>
-				<div className='flex flex-col gap-2'>
-					<label className='text-sm font-bold text-gray-300'>
-						NwkSKey (hex-encoded; optional)
-					</label>
-					<input
-						className='w-full p-4  rounded-lg bg-gray-700 text-gray-300 text-sm md:text-base'
-						type='text'
-						name='nwk-key'
-						id='nwk-key'
-						placeholder='Paste your Network Session Key here'
-						value={nwkKey}
-						onChange={handleNwkKeyChange}
-						data-umami-event="nwkskey-input"
-					/>
-				</div>
-				<div className='flex gap-4'>
-					<button
-						className='w-full px-4 py-2 text-sm font-bold text-white bg-red-500 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75'
-						type='button'
-						name='reset'
-						id='reset'
-						onClick={handleClear}
-						data-umami-event="clear-button"
-					>
-						Reset
-					</button>
-					<button
-						className='w-full px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75'
-						type='button'
-						name='decode'
-						id='decode'
-						onClick={handleDecode}
-						data-umami-event="decode-button"
-					>
-						Decode
-					</button>
-				</div>
+				<History
+					history={history}
+					onLoad={handleLoadHistory}
+					onDelete={handleDeleteHistory}
+					onRename={handleRenameHistory}
+					onFavorite={handleFavoriteHistory}
+				/>
 			</Card>
 			<Card title='Decoded Packet'>
 				{isLoading && <Skeleton />}

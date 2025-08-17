@@ -171,6 +171,11 @@ export default function Home() {
 		toast.success('Favorite status updated.');
 	};
 
+	const decodedPacketContent = () => {
+		const propertiesText = properties.map(p => `${p.name} = ${p.description}`).join('\n');
+		return `${propertiesText}\n${decoded}`.trim();
+	};
+
 
 	const handleClearInputs = () => {
 		setIsWarning(false);
@@ -281,7 +286,7 @@ export default function Home() {
 					onFavorite={handleFavoriteHistory}
 				/>
 			</Card>
-			<Card title='Decoded Packet'>
+			<Card title='Decoded Packet' copyableContent={decodedPacketContent()}>
 				{isLoading && <Skeleton />}
 				{properties.map((property) => (
 					<pre className='flex flex-col text-xs md:text-sm' key={property.name}>
@@ -290,7 +295,7 @@ export default function Home() {
 				))}
 				<pre className='text-xs md:text-sm' dangerouslySetInnerHTML={{ __html: sanitizeAndHighlightWarnings(decoded) }}></pre>
 			</Card>
-			<Card title='Decoded Packet (Buffer)'>
+			<Card title='Decoded Packet (Buffer)' copyableContent={decodedBuffer}>
 				{isLoading && <Skeleton />}
 				<pre className='text-xs md:text-sm'>{decodedBuffer}</pre>
 			</Card>

@@ -13,7 +13,7 @@ export default function History({ history, onLoad, onDelete, onRename, onFavorit
     <div className={styles.historyContainer}>
       <div className={styles.historyHeader}>
         <h3 className={styles.historyTitle}>History</h3>
-        <button onClick={onLoadDefaults} className={styles.iconButton} title="Load default examples">
+        <button onClick={onLoadDefaults} className={styles.iconButton} title="Load default examples" data-umami-event="load-default-examples">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={styles.reloadIcon}>
             <path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
           </svg>
@@ -26,7 +26,7 @@ export default function History({ history, onLoad, onDelete, onRename, onFavorit
         <ul className={styles.historyList}>
           {history.map((item) => (
             <li key={item.id} className={styles.historyItem}>
-              <span className={styles.itemName} onClick={() => onLoad(item.id)}>
+              <span className={styles.itemName} onClick={() => onLoad(item.id)} data-umami-event="load-execution">
                 {item.name}
               </span>
               <div className={styles.itemActions}>
@@ -34,6 +34,7 @@ export default function History({ history, onLoad, onDelete, onRename, onFavorit
                   onClick={() => onFavorite(item.id)}
                   className={styles.iconButton}
                   title={item.favorite ? 'Unmark as favorite' : 'Mark as favorite'}
+									data-umami-event="mark-as-favorite"
                 >
                   {item.favorite ? (
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={styles.favoriteIcon}>
@@ -49,6 +50,7 @@ export default function History({ history, onLoad, onDelete, onRename, onFavorit
                   onClick={() => handleRename(item.id)}
                   className={styles.iconButton}
                   title="Rename execution"
+									data-umami-event="rename-execution"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={styles.icon}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
@@ -58,6 +60,7 @@ export default function History({ history, onLoad, onDelete, onRename, onFavorit
                   onClick={() => onDelete(item.id)}
                   className={`${styles.iconButton} ${styles.deleteButton}`}
                   title="Delete execution"
+									data-umami-event="delete-execution"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={styles.icon}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.134-2.033-2.134H8.033c-1.12 0-2.033.954-2.033 2.134v.916m7.5 0a48.667 48.667 0 00-7.5 0" />

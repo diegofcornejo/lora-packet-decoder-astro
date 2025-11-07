@@ -255,7 +255,7 @@ export default function Home() {
 	};
 
 	return (
-		<main className="flex flex-col lg:flex-row gap-4 w-full text-white h-dvh">
+		<main className="grid grid-cols-1 lg:grid-cols-3 gap-4 text-white my-4 md:my-8">
 			<Card title='Parameters'>
 					<div className='flex flex-col gap-2'>
 						<label className='text-sm font-bold text-gray-300'>
@@ -304,7 +304,7 @@ export default function Home() {
 					</div>
 					<div className='flex gap-4'>
 						<button
-							className='w-full px-4 py-2 text-sm font-bold text-white bg-red-500 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75'
+							className='w-full px-4 py-2 text-sm font-bold text-white bg-red-500 rounded-lg shadow-md hover:bg-red-700 focus:outline-hidden focus:ring-2 focus:ring-red-400 focus:ring-opacity-75'
 							type='button'
 							name='reset'
 							id='reset'
@@ -314,7 +314,7 @@ export default function Home() {
 							Reset
 						</button>
 						<button
-							className='w-full px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75'
+							className='w-full px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75'
 							type='button'
 							name='decode'
 							id='decode'

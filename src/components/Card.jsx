@@ -25,7 +25,7 @@ const Card = ({ title, children, copyableContent }) => {
     };
 
     return (
-        <div className={`${styles.card} w-full lg:w-1/3 overflow-auto mt-4 max-h-96`}>
+        <div className={`${styles.card} w-full lg:flex-1 overflow-auto mt-4 max-h-96`}>
             {copyableContent && (
                 <button onClick={handleCopy} className={styles.copyButton} title="Copy to clipboard">
                     {isCopied ? (

@@ -56,13 +56,19 @@ export default function Home() {
 		try {
 			const savedHistory = localStorage.getItem('decodingHistory');
 			if (savedHistory) {
-				setHistory(JSON.parse(savedHistory));
+				const parsedHistory = JSON.parse(savedHistory);
+				if (Array.isArray(parsedHistory) && parsedHistory.length > 0) {
+					setHistory(parsedHistory);
+				} else {
+					setHistory(defaultHistory);
+				}
 			} else {
 				setHistory(defaultHistory);
 			}
 		} catch (error) {
 			console.error('Failed to load history from localStorage', error);
 			toast.error('Failed to load history from localStorage');
+			setHistory(defaultHistory);
 		}
 	}, []);
 
@@ -222,6 +228,9 @@ export default function Home() {
 		return `${propertiesText}\n${decoded}`.trim();
 	};
 
+	const hasDecodedPacket = properties.length > 0 || decoded.trim() !== '';
+	const hasDecodedBuffer = decodedBuffer.trim() !== '';
+
 
 	const handleClearInputs = () => {
 		setIsWarning(false);
@@ -255,7 +264,7 @@ export default function Home() {
 	};
 
 	return (
-		<main className="grid grid-cols-1 lg:grid-cols-3 gap-4 text-white my-4 md:my-8">
+		<main className="grid grid-cols-1 lg:grid-cols-3 gap-4 text-white mt-4 mb-0 md:mt-8 md:mb-0">
 			<Card title='Parameters'>
 					<div className='flex flex-col gap-2'>
 						<label className='text-sm font-bold text-gray-300'>
@@ -334,17 +343,33 @@ export default function Home() {
 				/>
 			</Card>
 			<Card title='Decoded Packet' copyableContent={decodedPacketContent()}>
-				{isLoading && <Skeleton />}
-				{properties.map((property) => (
-					<pre className='flex flex-col text-xs md:text-sm' key={property.name}>
-						{property.name} = {property.description}
-					</pre>
-				))}
-				<pre className='text-xs md:text-sm' dangerouslySetInnerHTML={{ __html: sanitizeAndHighlightWarnings(decoded) }}></pre>
+				{isLoading ? (
+					<Skeleton />
+				) : hasDecodedPacket ? (
+					<>
+						{properties.map((property) => (
+							<pre className='flex flex-col text-xs md:text-sm' key={property.name}>
+								{property.name} = {property.description}
+							</pre>
+						))}
+						<pre className='text-xs md:text-sm' dangerouslySetInnerHTML={{ __html: sanitizeAndHighlightWarnings(decoded) }}></pre>
+					</>
+				) : (
+					<div className='rounded-lg border border-dashed border-gray-600 bg-gray-800/40 p-4 text-xs md:text-sm text-gray-400'>
+						Run a decode to see parsed fields and warnings here.
+					</div>
+				)}
 			</Card>
 			<Card title='Decoded Packet (Buffer)' copyableContent={decodedBuffer}>
-				{isLoading && <Skeleton />}
-				<pre className='text-xs md:text-sm'>{decodedBuffer}</pre>
+				{isLoading ? (
+					<Skeleton />
+				) : hasDecodedBuffer ? (
+					<pre className='text-xs md:text-sm'>{decodedBuffer}</pre>
+				) : (
+					<div className='rounded-lg border border-dashed border-gray-600 bg-gray-800/40 p-4 text-xs md:text-sm text-gray-400'>
+						Decoded JSON buffer will appear here after running decode.
+					</div>
+				)}
 			</Card>
 			<Toaster position="top-center" richColors closeButton />
 		</main>

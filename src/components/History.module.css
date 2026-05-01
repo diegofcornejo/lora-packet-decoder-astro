@@ -67,20 +67,6 @@
     flex-shrink: 0;
   }
   
-  .actionButton {
-    background-color: #4b5563;
-    color: #e5e7eb;
-    border: none;
-    border-radius: 0.25rem;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-    cursor: pointer;
-  }
-  
-  .actionButton:hover {
-    background-color: #6b7280;
-  }
-
   .iconButton {
     background-color: transparent;
     border: none;

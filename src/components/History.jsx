@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './History.module.css';
 
 export default function History({ history, onLoad, onDelete, onRename, onFavorite, onLoadDefaults }) {

@@ -1,6 +1,6 @@
 import lorapacket from 'lora-packet';
 
-export async function POST({ params, request }) {
+export async function POST({ request }) {
 
 	try {
 		//{ data, appKey, nwkKey }
